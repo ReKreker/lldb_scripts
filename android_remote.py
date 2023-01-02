@@ -31,6 +31,11 @@ def handle_command(debugger, command, exe_ctx, result, internal_dict):
         result.SetError("[-] Wrong args amount")
         return
 
+    target = args[0]
+    if not os.path.exists(target):
+        result.SetError("[-] Dont valid path to target")
+        return
+
     if os.getenv("ANDROID_SERIAL", options.serial) is None:
         result.SetError("[-] 'adb devices' and set serial as option")
         return
@@ -58,7 +63,7 @@ def handle_command(debugger, command, exe_ctx, result, internal_dict):
     debugger.HandleCommand("platform select remote-android")
     debugger.HandleCommand(
         f"platform connect connect://localhost:{options.port}")
-    debugger.HandleCommand(f"target create {args[0]}")
+    debugger.HandleCommand(f"target create {target}")
 
     result.AppendMessage('[+] Connection to lldb-server is successful')
 
