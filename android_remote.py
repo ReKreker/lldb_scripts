@@ -31,6 +31,10 @@ def handle_command(debugger, command, exe_ctx, result, internal_dict):
         result.SetError("[-] Wrong args amount")
         return
 
+    if os.getenv("ANDROID_SERIAL", options.serial) is None:
+        result.SetError("[-] 'adb devices' and set serial as option")
+        return
+
     try:
         call(["adb", "wait-for-device"])
     except FileNotFoundError:
@@ -68,6 +72,10 @@ def generate_option_parser():
         action="store",
         default=5343,
         help="choose port for lldb-server listening (default: 5343)")
+    parser.add_option("-s",
+                      "--serial",
+                      action="store",
+                      help="android's serial id")
     parser.add_option("-r",
                       "--root",
                       action="store_true",
